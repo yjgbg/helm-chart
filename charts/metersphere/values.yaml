@@ -27,6 +27,7 @@ common:
 server:
   enabled: true
   image: metersphere
+  imageTag: {{.Values.common.imageTag}}
   replicas: 1
   properties: |-
     ## DATABASE
@@ -80,7 +81,7 @@ logPersistence:
   size: 10Gi
 
 mysql:
-  enabled: true
+  enabled: false
   image: mysql
   imageTag: "5.7.25"
   password: Password123@mysql

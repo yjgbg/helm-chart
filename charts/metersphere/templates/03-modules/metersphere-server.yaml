@@ -43,7 +43,7 @@ spec:
               sleep 10
       containers:
         - name: metersphere-server
-          image: {{.Values.common.imagePrefix}}{{.Values.server.image}}:{{.Values.common.imageTag}}
+          image: {{.Values.common.imagePrefix}}{{.Values.server.image}}:{{.Values.server.imageTag}}
           imagePullPolicy: {{.Values.common.imagePullPolicy}}
           resources:
             limits:
