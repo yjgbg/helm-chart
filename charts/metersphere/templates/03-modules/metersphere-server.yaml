@@ -47,10 +47,10 @@ spec:
           imagePullPolicy: {{.Values.common.imagePullPolicy}}
           resources:
             limits:
-              memory: 1Gi
+              memory: {.Values.server.resources.limits.memory}}
             requests:
-              memory: 300Mi
-              cpu: 0.1
+              memory: {.Values.server.resources.requests.memory}}
+              cpu: {.Values.server.resources.requests.cpu}}
           ports:
             - name: http
               containerPort: 8081
