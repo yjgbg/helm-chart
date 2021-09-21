@@ -16,6 +16,7 @@ common:
     port: 3306
     username: root
     password: Password123@mysql
+    database: metersphere
   kafka:
     host: metersphere-kafka 
     port: 9092
@@ -27,11 +28,11 @@ common:
 server:
   enabled: true
   image: metersphere
-  imageTag: "{{.Values.common.imageTag}}"
+  imageTag: v1.12.0
   replicas: 1
   properties: |-
     ## DATABASE
-    spring.datasource.url=jdbc:mysql://{{.Values.common.mysql.host}}:{{.Values.common.mysql.port}}/metersphere?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    spring.datasource.url=jdbc:mysql://{{.Values.common.mysql.host}}:{{.Values.common.mysql.port}}/{{.Values.common.mysql.database}}?autoReconnect=false&useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
     spring.datasource.username={{.Values.common.mysql.username}}
     spring.datasource.password={{.Values.common.mysql.password}}
 
