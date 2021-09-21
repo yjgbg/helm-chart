@@ -27,7 +27,7 @@ common:
 server:
   enabled: true
   image: metersphere
-  imageTag: {{.Values.common.imageTag}}
+  imageTag: "{{.Values.common.imageTag}}"
   replicas: 1
   properties: |-
     ## DATABASE
