@@ -15,6 +15,6 @@ entries:
     sources:
     - https://github.com/metersphere/
     urls:
-    - https://github.com/metersphere/helm-chart/releases/download/metersphere-1.0.0/metersphere-1.0.0.tgz
+    - https://github.com/yjgbg/helm-chart/releases/download/metersphere-1.0.0/metersphere-1.0.0.tgz
     version: 1.0.0
 generated: "2021-09-03T03:06:50.423561101Z"
