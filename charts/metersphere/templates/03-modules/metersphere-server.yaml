@@ -50,7 +50,7 @@ spec:
             - name: KAFKA_BOOTSTRAP-SERVERS
               value: {{.Values.common.kafka.host}}.{{.Release.Namespace}}:{{.Values.common.kafka.port}}
           command:
-            - bash
+            - sh
             - -c
             - |
               set -ex
