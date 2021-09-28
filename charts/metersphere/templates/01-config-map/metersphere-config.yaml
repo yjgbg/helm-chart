@@ -1,4 +1,3 @@
-{{if or ( .Values.server.enabled ) ( .Values.dataStreaming.enabled ) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -12,4 +11,7 @@ data:
   data-streaming.properties: |-
     {{ tpl .Values.dataStreaming.properties . | nindent 4 }}
 {{end}}
+{{if .Values.nodeController.enabled | default true }}
+  node-controller.properties: |-
+    {{ tpl .Values.nodeController.properties . | nindent 4 }}
 {{end}}

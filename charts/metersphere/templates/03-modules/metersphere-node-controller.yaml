@@ -1,17 +1,17 @@
-{{if .Values.dataStreaming.enabled }}
+{{if .Values.nodeController.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: metersphere-data-streaming
+  name: metersphere-node-controller
 spec:
-  replicas: {{.Values.dataStreaming.replicas | default 1}}
+  replicas: {{.Values.nodeController.replicas | default 1}}
   selector:
     matchLabels:
-      app: metersphere-data-streaming
+      app: metersphere-node-controller
   template:
     metadata:
       labels:
-        app: metersphere-data-streaming
+        app: metersphere-node-controller
     spec:
       affinity:
         podAntiAffinity:
@@ -23,19 +23,9 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - metersphere-data-streaming
+                  - metersphere-node-controller
               topologyKey: kubernetes.io/hostname
       initContainers:
-        - name: wait-mysql
-          image: busybox:latest
-          imagePullPolicy: IfNotPresent
-          command:
-            - sh
-            - -c
-            - |
-              set -ex
-              until nc -zv {{ .Values.common.mysql.host }} {{ .Values.common.mysql.port }}; do sleep 5; done
-              sleep 10
         - name: wait-kafka
           image: busybox:latest
           imagePullPolicy: IfNotPresent
@@ -47,8 +37,8 @@ spec:
               until nc -zv {{ .Values.common.kafka.host }} {{ .Values.common.kafka.port }}; do sleep 5; done
               sleep 10
       containers:
-        - name: metersphere-data-streaming
-          image: {{.Values.common.imagePrefix}}{{.Values.dataStreaming.image}}:{{.Values.common.imageTag}}
+        - name: metersphere-node-controller
+          image: {{.Values.common.imagePrefix}}{{.Values.nodeController.image}}:{{.Values.common.imageTag}}
           imagePullPolicy: {{.Values.common.imagePullPolicy}}
           resources:
             limits:
@@ -58,12 +48,16 @@ spec:
               cpu: 0.1
           ports:
             - name: http
-              containerPort: 8084
+              containerPort: 8082
           volumeMounts:
             - mountPath: /opt/metersphere/conf
               name: opt-metersphere-config
             - mountPath: /opt/metersphere/logs
               name: metersphere-logs
+            - mountPath: /opt/metersphere/data
+              name: node-controller-data              
+            - mountPath: /var/run 
+              name: docker-sock 
       {{if ne (.Values.common.imagePullSecrets | default "nil") "nil"}}
       imagePullSecrets:
         - name: {{.Values.common.imagePullSecrets}}
@@ -73,7 +67,7 @@ spec:
             defaultMode: 420
             name: metersphere-config
             items:
-            - key: data-streaming.properties
+            - key: node-controller.properties
               path: metersphere.properties
           name: opt-metersphere-config
         - name: metersphere-logs
@@ -83,19 +77,29 @@ spec:
           {{ else }}
           emptyDir: {}
           {{ end }}
+        - name: node-controller-data
+          {{if .Values.dataPersistence.enabled}}
+          persistentVolumeClaim:
+            claimName: node-controller-data-pvc
+          {{ else }}
+          emptyDir: {}
+          {{ end }}          
+        - name: docker-sock 
+          hostPath: 
+            path: /var/run 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: metersphere-data-streaming
+  name: ms-node-controller
   labels:
-    app: metersphere-data-streaming
+    app: metersphere-node-controller
 spec:
   sessionAffinity: ClientIP
   selector:
-    app: metersphere-data-streaming
+    app: metersphere-node-controller
   ports:
     - name: http
-      port: 8084
+      port: 8082
       protocol: TCP
 {{end}}
