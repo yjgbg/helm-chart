@@ -47,14 +47,14 @@ spec:
           image: busybox:latest
           imagePullPolicy: IfNotPresent
           env:
-            - name: KAFKA_BOOTSTRAP-SERVERS
+            - name: KAFKA_BOOTSTRAP_SERVERS
               value: {{.Values.common.kafka.host}}.{{.Release.Namespace}}:{{.Values.common.kafka.port}}
           command:
             - sh
             - -c
             - |
               set -ex
-              for i in ${KAFKA_BOOTSTRAP-SERVERS//,/ };do
+              for i in ${KAFKA_BOOTSTRAP_SERVERS//,/ };do
                 until nc -zv ${i%:*} ${i#*:};do sleep 5;done
                 echo "Kafka bootstrap $i is OK now."
                 sleep 5
@@ -73,7 +73,7 @@ spec:
           image: {{.Values.common.imagePrefix}}{{.Values.server.image}}:{{.Values.server.imageTag}}
           imagePullPolicy: {{.Values.common.imagePullPolicy}}
           env:
-            - name: KAFKA_BOOTSTRAP-SERVERS
+            - name: KAFKA_BOOTSTRAP_SERVERS
               value: {{.Values.common.kafka.host}}.{{.Release.Namespace}}:{{.Values.common.kafka.port}}
           resources:
             limits:
