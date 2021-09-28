@@ -48,10 +48,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: KAFKA_BOOTSTRAP-SERVERS
-              valueFrom:
-                configMapKeyRef:
-                  name: metersphere-config
-                  key: kafka.bootstrap-servers      
+              value: {{.Values.common.kafka.host}}.{{.Release.Namespace}}:{{.Values.common.kafka.port}}
           command:
             - bash
             - -c
@@ -77,10 +74,7 @@ spec:
           imagePullPolicy: {{.Values.common.imagePullPolicy}}
           env:
             - name: KAFKA_BOOTSTRAP-SERVERS
-              valueFrom:
-                configMapKeyRef:
-                  name: metersphere-config
-                  key: kafka.bootstrap-servers
+              value: {{.Values.common.kafka.host}}.{{.Release.Namespace}}:{{.Values.common.kafka.port}}
           resources:
             limits:
               memory: {{.Values.server.resources.limits.memory}}
